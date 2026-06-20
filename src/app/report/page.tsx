@@ -251,7 +251,7 @@ export default function ReportPage() {
       {/* TopAppBar */}
       <header className="shrink-0 w-full z-50 bg-background flex justify-between items-center px-4 h-16 border-b border-border/40">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm border border-border/50" />
+          <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm border border-border/50 dark:bg-white p-1 object-contain" />
           <h1 className="text-xl font-bold text-primary">Lapor Mati Lampu</h1>
         </div>
         <div className="flex items-center gap-2">

@@ -253,7 +253,7 @@ export default function DashboardPage() {
       <aside className="w-64 bg-card border-r border-border flex-col hidden md:flex z-20 shadow-xl">
         <div className="p-6 border-b border-border/50">
           <div className="flex items-center gap-3 mb-2">
-            <img src="/logo.png" alt="Blackout Tracker Logo" className="w-10 h-10 rounded-xl shadow-md border border-border/50" />
+            <img src="/logo.png" alt="Blackout Tracker Logo" className="w-10 h-10 rounded-xl shadow-md border border-border/50 dark:bg-white p-1 object-contain" />
             <h1 className="text-xl font-bold text-primary">Blackout Tracker</h1>
           </div>
           <p className="text-sm text-muted-foreground">Indonesia Grid Monitor</p>
@@ -278,7 +278,7 @@ export default function DashboardPage() {
         {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border z-20">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm border border-border/50" />
+            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm border border-border/50 dark:bg-white p-1 object-contain" />
             <span className="font-bold text-primary">Blackout Tracker</span>
           </div>
           <ThemeToggle />
