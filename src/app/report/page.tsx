@@ -251,7 +251,7 @@ export default function ReportPage() {
     <div className="flex flex-col h-[100dvh] bg-background text-foreground antialiased overflow-hidden font-sans">
       {/* TopAppBar */}
       <header className="shrink-0 w-full z-50 bg-background flex justify-between items-center px-4 h-16 border-b border-border/40">
-        <AppLogo className="h-[38px] w-auto" />
+        <AppLogo className="h-11 w-auto" />
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Link href="/dashboard" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-accent transition-colors">

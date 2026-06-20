@@ -253,7 +253,7 @@ export default function DashboardPage() {
       {/* Desktop Sidebar */}
       <aside className="w-64 bg-card border-r border-border flex-col hidden md:flex z-20 shadow-xl">
         <div className="p-6 border-b border-border/50">
-          <AppLogo className="h-12 w-auto mb-3" />
+          <AppLogo className="h-16 w-auto mb-3" />
           <p className="text-sm text-muted-foreground">Indonesia Grid Monitor</p>
         </div>
         <nav className="flex-1 p-4 space-y-2">
@@ -275,7 +275,7 @@ export default function DashboardPage() {
       <main className="flex-1 flex flex-col relative">
         {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border z-20">
-          <AppLogo className="h-[38px] w-auto" />
+          <AppLogo className="h-11 w-auto" />
           <ThemeToggle />
         </header>
 
