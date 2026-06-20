@@ -26,7 +26,6 @@ import {
 import Link from "next/link";
 
 export default function ReportPage() {
-  const [status, setStatus] = useState<"mati" | "nyala">("mati");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
@@ -139,11 +138,8 @@ export default function ReportPage() {
     }
 
     // Final Validation Check against User Input
-    if (status === 'mati' && prediction === 'POWER_UP') {
-      setValidationMsg("Foto Ditolak: Lingkungan terlihat terang, tetapi Anda melaporkan 'Mati Lampu'.");
-      setPhotoValidated(false);
-    } else if (status === 'nyala' && prediction === 'BLACKOUT') {
-      setValidationMsg("Foto Ditolak: Lingkungan terlihat gelap, tetapi Anda melaporkan 'Lampu Nyala'.");
+    if (prediction === 'POWER_UP') {
+      setValidationMsg("Foto Ditolak: Lingkungan terlihat terang, mohon ambil foto area yang padam/gelap.");
       setPhotoValidated(false);
     } else {
       setValidationMsg("Verifikasi Visual Berhasil!");
@@ -168,7 +164,7 @@ export default function ReportPage() {
 
     try {
       const result = await submitReportAction(
-        status,
+        "mati",
         location.lat,
         location.lng,
         "",
@@ -281,7 +277,6 @@ export default function ReportPage() {
               className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl active:scale-95 transition-transform" 
               onClick={() => {
                 setSuccess(false);
-                setStatus("mati");
                 setLocation(null);
                 setCaptchaToken(null);
               }}
@@ -333,28 +328,6 @@ export default function ReportPage() {
             </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* Status Toggle */}
-          <div className="bg-card/70 backdrop-blur-md border border-border/50 p-4 rounded-xl">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 block">Status Listrik</label>
-            <div className="grid grid-cols-2 gap-2 bg-background p-1 rounded-lg">
-              <button 
-                type="button"
-                onClick={() => { setStatus('mati'); setPhotoValidated(false); setValidationMsg(""); }}
-                className={`flex items-center justify-center gap-2 py-3 rounded-md transition-all text-sm font-semibold ${status === 'mati' ? 'bg-primary/20 text-primary shadow-sm' : 'text-muted-foreground hover:bg-accent'}`}
-              >
-                <LightbulbOff className="w-5 h-5" />
-                Mati Lampu
-              </button>
-              <button 
-                type="button"
-                onClick={() => { setStatus('nyala'); setPhotoValidated(false); setValidationMsg(""); }}
-                className={`flex items-center justify-center gap-2 py-3 rounded-md transition-all text-sm font-semibold ${status === 'nyala' ? 'bg-secondary/20 text-secondary shadow-sm' : 'text-muted-foreground hover:bg-accent'}`}
-              >
-                <Lightbulb className="w-5 h-5" />
-                Lampu Nyala
-              </button>
-            </div>
-          </div>
 
           {/* Location Picker */}
           <div className="bg-card/70 backdrop-blur-md border border-border/50 p-4 rounded-xl">

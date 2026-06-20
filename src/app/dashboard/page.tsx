@@ -30,8 +30,6 @@ function ChoroplethLayers({ geojsonData, setHoverInfo }: { geojsonData: any, set
     }
 
     // Fill Layer
-    // ✅ FIX: Only shade red if recentMatiCount > 0, only green if recentNyalaCount > 0
-    // If no recent reports at all → transparent (no shading)
     if (!map.getLayer('city-fills')) {
       map.addLayer({
         id: 'city-fills',
@@ -40,38 +38,15 @@ function ChoroplethLayers({ geojsonData, setHoverInfo }: { geojsonData: any, set
         paint: {
           'fill-color': [
             'case',
-            // Only shade RED if there are recent (1hr) mati reports AND mati > nyala
-            ['all',
-              ['>', ['get', 'recentMatiCount'], 0],
-              ['>', ['get', 'recentMatiCount'], ['get', 'recentNyalaCount']]
-            ], [
+            // Shade RED if there are recent (1hr) mati reports
+            ['>', ['get', 'recentMatiCount'], 0], [
               'interpolate', ['linear'], ['get', 'recentMatiCount'],
-              1, 'rgba(255, 84, 81, 0.2)',
-              5, 'rgba(255, 84, 81, 0.5)',
-              15, 'rgba(255, 84, 81, 0.8)'
+              1, 'rgba(255, 84, 81, 0.3)',
+              5, 'rgba(255, 84, 81, 0.6)',
+              15, 'rgba(255, 84, 81, 0.9)'
             ],
-            // Only shade GREEN if there are recent (1hr) nyala reports AND nyala > mati
-            ['all',
-              ['>', ['get', 'recentNyalaCount'], 0],
-              ['>', ['get', 'recentNyalaCount'], ['get', 'recentMatiCount']]
-            ], [
-              'interpolate', ['linear'], ['get', 'recentNyalaCount'],
-              1, 'rgba(74, 225, 118, 0.2)',
-              5, 'rgba(74, 225, 118, 0.5)',
-              15, 'rgba(74, 225, 118, 0.8)'
-            ],
-            // Only shade RED if both are equal but there are recent mati reports
-            ['all',
-              ['>', ['get', 'recentMatiCount'], 0],
-              ['==', ['get', 'recentMatiCount'], ['get', 'recentNyalaCount']]
-            ], [
-              'interpolate', ['linear'], ['get', 'recentMatiCount'],
-              1, 'rgba(255, 84, 81, 0.2)',
-              5, 'rgba(255, 84, 81, 0.5)',
-              15, 'rgba(255, 84, 81, 0.8)'
-            ],
-            // No recent reports at all → no shading
-            'rgba(150, 150, 150, 0.05)'
+            // Default state: Safe (Green)
+            'rgba(74, 225, 118, 0.15)'
           ],
           'fill-outline-color': 'transparent'
         }
@@ -121,12 +96,7 @@ function ChoroplethLayers({ geojsonData, setHoverInfo }: { geojsonData: any, set
           cityName: props.WADMKK,
           province: props.WADMPR,
           counts: {
-            // ✅ Tooltip shows full-day counts
-            mati: props.matiCount || 0,
-            nyala: props.nyalaCount || 0,
-            // Optional: show recent counts too
-            recentMati: props.recentMatiCount || 0,
-            recentNyala: props.recentNyalaCount || 0,
+            mati: props.matiCount || 0
           }
         });
       }
@@ -168,9 +138,9 @@ export default function DashboardPage() {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const [totalMati, setTotalMati] = useState(0);
-  const [totalNyala, setTotalNyala] = useState(0);
-  const totalLaporan = totalMati + totalNyala;
+  const [totalSemuaLaporan, setTotalSemuaLaporan] = useState(0);
+  const [totalHariIni, setTotalHariIni] = useState(0);
+  const [total1JamLalu, setTotal1JamLalu] = useState(0);
 
   useEffect(() => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } as const;
@@ -197,38 +167,40 @@ export default function DashboardPage() {
           return;
         }
 
-        // 2. Fetch all reports today (for totals + tooltip)
+        // 2a. Fetch total all-time reports count
+        const { count: totalSemuaCount } = await supabase
+          .from('reports')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'mati');
+
+        // 2b. Fetch all reports today
         const startOfDay = new Date();
-        console.log(startOfDay);
         startOfDay.setHours(0, 0, 0, 0);
 
         const { data: allReportsToday, error } = await supabase
           .from('reports')
           .select('*')
+          .eq('status', 'mati')
           .gte('created_at', startOfDay.toISOString());
 
         if (error) throw error;
 
-        // ✅ Total counts = ALL reports today (no 1hr filter)
-        let matiCountGlobal = 0;
-        let nyalaCountGlobal = 0;
+        let hariIniCount = allReportsToday?.length || 0;
+        let satuJamCount = 0;
 
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).getTime();
 
         if (allReportsToday) {
           allReportsToday.forEach((r: any) => {
-            if (r.status === 'mati') matiCountGlobal++;
-            if (r.status === 'nyala') nyalaCountGlobal++;
+            if (new Date(r.created_at).getTime() >= oneHourAgo) {
+              satuJamCount++;
+            }
           });
         }
 
-        setTotalMati(matiCountGlobal);
-        setTotalNyala(nyalaCountGlobal);
-        console.log(allReportsToday);
-        console.log(matiCountGlobal);
-        console.log(nyalaCountGlobal);
-
-        // ✅ 1-hour window only used for MAP SHADING
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).getTime();
+        setTotalSemuaLaporan(totalSemuaCount || 0);
+        setTotalHariIni(hariIniCount);
+        setTotal1JamLalu(satuJamCount);
 
         // 3. Turf aggregation
         if (allReportsToday && allReportsToday.length > 0) {
@@ -245,25 +217,17 @@ export default function DashboardPage() {
                 const ptsWithin = turf.pointsWithinPolygon(points, poly);
 
                 let mati = 0;        // all-day count (for tooltip)
-                let nyala = 0;       // all-day count (for tooltip)
                 let recentMati = 0;  // 1-hr count (for shading)
-                let recentNyala = 0; // 1-hr count (for shading)
 
                 ptsWithin.features.forEach(pt => {
                   if (pt.properties.status === 'mati') {
                     mati++;
                     if (pt.properties.recent) recentMati++;
                   }
-                  if (pt.properties.status === 'nyala') {
-                    nyala++;
-                    if (pt.properties.recent) recentNyala++;
-                  }
                 });
 
                 poly.properties.matiCount = mati;
-                poly.properties.nyalaCount = nyala;
                 poly.properties.recentMatiCount = recentMati;   // ✅ drives shading
-                poly.properties.recentNyalaCount = recentNyala; // ✅ drives shading
               } catch (e) {
                 console.warn("Skipping invalid polygon:", poly.properties.WADMKK);
               }
@@ -358,16 +322,9 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_5px_rgba(255,84,81,0.8)]"></div>
-                    <span className="text-sm font-medium text-foreground">Padam</span>
+                    <span className="text-sm font-medium text-foreground">Laporan Padam Hari Ini</span>
                   </div>
                   <span className="text-sm font-bold text-primary">{hoverInfo.counts.mati}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_5px_rgba(74,225,118,0.8)]"></div>
-                    <span className="text-sm font-medium text-foreground">Nyala</span>
-                  </div>
-                  <span className="text-sm font-bold text-secondary">{hoverInfo.counts.nyala}</span>
                 </div>
               </div>
             </div>
@@ -400,8 +357,8 @@ export default function DashboardPage() {
                   <Activity className="w-3 h-3 md:w-6 md:h-6 text-foreground" />
                 </div>
                 <div className="w-full">
-                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Total</div>
-                  <div className="text-sm md:text-2xl font-bold text-foreground leading-tight">{totalLaporan.toLocaleString('id-ID')}</div>
+                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Semua Laporan</div>
+                  <div className="text-sm md:text-2xl font-bold text-foreground leading-tight">{totalSemuaLaporan.toLocaleString('id-ID')}</div>
                 </div>
               </div>
 
@@ -410,18 +367,18 @@ export default function DashboardPage() {
                   <ZapOff className="w-3 h-3 md:w-6 md:h-6 text-primary" />
                 </div>
                 <div className="w-full">
-                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Padam</div>
-                  <div className="text-sm md:text-2xl font-bold text-primary leading-tight">{totalMati.toLocaleString('id-ID')}</div>
+                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Padam Hari Ini</div>
+                  <div className="text-sm md:text-2xl font-bold text-primary leading-tight">{totalHariIni.toLocaleString('id-ID')}</div>
                 </div>
               </div>
 
               <div className="bg-card/90 backdrop-blur-md border border-border/50 rounded-xl p-2 md:p-4 shadow-lg flex flex-col md:flex-row items-center text-center md:text-left gap-1 md:gap-4 transition-transform hover:scale-[1.02]">
-                <div className="w-6 h-6 md:w-12 md:h-12 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-3 h-3 md:w-6 md:h-6 text-secondary" />
+                <div className="w-6 h-6 md:w-12 md:h-12 rounded-full bg-destructive/20 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-3 h-3 md:w-6 md:h-6 text-destructive" />
                 </div>
                 <div className="w-full">
-                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Nyala</div>
-                  <div className="text-sm md:text-2xl font-bold text-secondary leading-tight">{totalNyala.toLocaleString('id-ID')}</div>
+                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Padam 1 Jam Lalu</div>
+                  <div className="text-sm md:text-2xl font-bold text-destructive leading-tight">{total1JamLalu.toLocaleString('id-ID')}</div>
                 </div>
               </div>
             </div>
