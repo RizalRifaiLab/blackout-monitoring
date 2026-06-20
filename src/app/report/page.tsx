@@ -275,7 +275,7 @@ export default function ReportPage() {
             </div>
             <h2 className="text-xl font-bold mb-2 text-foreground">Laporan Terkirim!</h2>
             <p className="text-sm text-muted-foreground mb-6">
-              Terima kasih, informasi Anda telah diteruskan ke tim teknis PLN. Pantau status pemulihan di Live Map.
+              Terima kasih, informasi Anda telah dibagikan ke sesama warga. Pantau status pemulihan di Live Map.
             </p>
             <button 
               className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl active:scale-95 transition-transform" 
