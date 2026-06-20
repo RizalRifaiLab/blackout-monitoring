@@ -8,6 +8,7 @@ import { AlertTriangle, Map as MapIcon, Activity, ZapOff, CheckCircle2, Loader2 
 import { supabase } from "@/lib/supabase";
 import * as turf from "@turf/turf";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AppLogo } from "@/components/ui/app-logo";
 
 const GEOJSON_URL = "https://raw.githubusercontent.com/ardian28/GeoJson-Indonesia-38-Provinsi/main/Kabupaten/38%20Provinsi%20Indonesia%20-%20Kabupaten.json";
 
@@ -252,10 +253,7 @@ export default function DashboardPage() {
       {/* Desktop Sidebar */}
       <aside className="w-64 bg-card border-r border-border flex-col hidden md:flex z-20 shadow-xl">
         <div className="p-6 border-b border-border/50">
-          <div className="flex items-center gap-3 mb-2">
-            <img src="/logo.png" alt="Blackout Tracker Logo" className="w-10 h-10 rounded-xl shadow-md border border-border/50 dark:bg-white p-1 object-contain" />
-            <h1 className="text-xl font-bold text-primary">Blackout Tracker</h1>
-          </div>
+          <AppLogo className="h-12 w-auto mb-3" />
           <p className="text-sm text-muted-foreground">Indonesia Grid Monitor</p>
         </div>
         <nav className="flex-1 p-4 space-y-2">
@@ -277,10 +275,7 @@ export default function DashboardPage() {
       <main className="flex-1 flex flex-col relative">
         {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border z-20">
-          <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm border border-border/50 dark:bg-white p-1 object-contain" />
-            <span className="font-bold text-primary">Blackout Tracker</span>
-          </div>
+          <AppLogo className="h-8 w-auto" />
           <ThemeToggle />
         </header>
 

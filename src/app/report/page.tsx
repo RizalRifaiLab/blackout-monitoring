@@ -8,6 +8,7 @@ import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import { submitReportAction } from "@/app/actions/submitReport";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AppLogo } from "@/components/ui/app-logo";
 import { 
   ZapOff, 
   Home, 
@@ -250,10 +251,7 @@ export default function ReportPage() {
     <div className="flex flex-col h-[100dvh] bg-background text-foreground antialiased overflow-hidden font-sans">
       {/* TopAppBar */}
       <header className="shrink-0 w-full z-50 bg-background flex justify-between items-center px-4 h-16 border-b border-border/40">
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm border border-border/50 dark:bg-white p-1 object-contain" />
-          <h1 className="text-xl font-bold text-primary">Lapor Mati Lampu</h1>
-        </div>
+        <AppLogo className="h-8 w-auto" />
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Link href="/dashboard" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-accent transition-colors">
