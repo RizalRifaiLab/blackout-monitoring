@@ -44,17 +44,32 @@ function ChoroplethLayers({ geojsonData, setHoverInfo }: { geojsonData: any, set
             ['all',
               ['>', ['get', 'recentMatiCount'], 0],
               ['>', ['get', 'recentMatiCount'], ['get', 'recentNyalaCount']]
-            ], 'rgba(255, 84, 81, 0.7)',
+            ], [
+              'interpolate', ['linear'], ['get', 'recentMatiCount'],
+              1, 'rgba(255, 84, 81, 0.2)',
+              5, 'rgba(255, 84, 81, 0.5)',
+              15, 'rgba(255, 84, 81, 0.8)'
+            ],
             // Only shade GREEN if there are recent (1hr) nyala reports AND nyala > mati
             ['all',
               ['>', ['get', 'recentNyalaCount'], 0],
               ['>', ['get', 'recentNyalaCount'], ['get', 'recentMatiCount']]
-            ], 'rgba(74, 225, 118, 0.7)',
+            ], [
+              'interpolate', ['linear'], ['get', 'recentNyalaCount'],
+              1, 'rgba(74, 225, 118, 0.2)',
+              5, 'rgba(74, 225, 118, 0.5)',
+              15, 'rgba(74, 225, 118, 0.8)'
+            ],
             // Only shade RED if both are equal but there are recent mati reports
             ['all',
               ['>', ['get', 'recentMatiCount'], 0],
               ['==', ['get', 'recentMatiCount'], ['get', 'recentNyalaCount']]
-            ], 'rgba(255, 84, 81, 0.7)',
+            ], [
+              'interpolate', ['linear'], ['get', 'recentMatiCount'],
+              1, 'rgba(255, 84, 81, 0.2)',
+              5, 'rgba(255, 84, 81, 0.5)',
+              15, 'rgba(255, 84, 81, 0.8)'
+            ],
             // No recent reports at all → no shading
             'rgba(150, 150, 150, 0.05)'
           ],
