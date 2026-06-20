@@ -251,9 +251,9 @@ export default function ReportPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased overflow-x-hidden pb-20 font-sans">
+    <div className="flex flex-col h-[100dvh] bg-background text-foreground antialiased overflow-hidden font-sans">
       {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 bg-background flex justify-between items-center px-4 h-16 border-b border-border/40">
+      <header className="shrink-0 w-full z-50 bg-background flex justify-between items-center px-4 h-16 border-b border-border/40">
         <div className="flex items-center gap-3">
           <ZapOff className="text-primary w-6 h-6" />
           <h1 className="text-xl font-bold text-primary">Lapor Mati Lampu</h1>
@@ -293,7 +293,8 @@ export default function ReportPage() {
       )}
 
       {/* Main Content Canvas */}
-      <main className="pt-24 pb-12 px-4 max-w-md mx-auto min-h-screen">
+      <main className="flex-1 overflow-y-auto w-full">
+        <div className="py-8 px-4 max-w-md mx-auto">
         {!permissionsGranted ? (
           <div className="flex flex-col items-center justify-center text-center space-y-6 mt-10">
             <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
@@ -459,10 +460,11 @@ export default function ReportPage() {
         </form>
         </div>
         )}
+        </div>
       </main>
 
       {/* BottomNavBar */}
-      <nav className="fixed bottom-0 w-full z-50 bg-background border-t border-border/40 flex justify-around items-center h-20 px-4 pb-safe">
+      <nav className="shrink-0 w-full z-50 bg-background border-t border-border/40 flex justify-around items-center min-h-16 py-2 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         <Link href="/report" className="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-full px-6 py-1">
           <AlertTriangle className="w-6 h-6 mb-1" />
           <span className="text-[10px] font-semibold">Report</span>

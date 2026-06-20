@@ -284,7 +284,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex h-[100dvh] bg-background text-foreground overflow-hidden">
       {/* Desktop Sidebar */}
       <aside className="w-64 bg-card border-r border-border flex-col hidden md:flex z-20 shadow-xl">
         <div className="p-6 border-b border-border/50">
@@ -429,7 +429,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="md:hidden bg-card border-t border-border flex justify-around items-center h-16 px-4 pb-safe z-20">
+        <nav className="md:hidden bg-card border-t border-border flex justify-around items-center min-h-16 py-2 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] z-20">
           <Link href="/report" className="flex flex-col items-center justify-center text-muted-foreground hover:bg-accent rounded-full px-6 py-1 transition-all">
             <AlertTriangle className="w-5 h-5 mb-1" />
             <span className="text-[10px] font-semibold">Report</span>
