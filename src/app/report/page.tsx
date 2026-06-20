@@ -33,6 +33,11 @@ export default function ReportPage() {
   const [locationLoading, setLocationLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
+  // Permissions Gate State
+  const [permissionsGranted, setPermissionsGranted] = useState(false);
+  const [permissionLoading, setPermissionLoading] = useState(false);
+  const [permissionError, setPermissionError] = useState("");
+
   // Camera State
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -212,6 +217,32 @@ export default function ReportPage() {
     }
   };
 
+  const handleRequestPermissions = async () => {
+    setPermissionLoading(true);
+    setPermissionError("");
+    try {
+      // 1. Request Camera
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      stream.getTracks().forEach(track => track.stop()); // Immediately stop it, we just needed the permission
+
+      // 2. Request Location
+      await new Promise((resolve, reject) => {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
+        } else {
+          reject(new Error("Geolokasi tidak didukung."));
+        }
+      });
+
+      setPermissionsGranted(true);
+    } catch (error: any) {
+      console.error("Permission error", error);
+      setPermissionError("Akses ditolak. Mohon klik ikon gembok di URL bar browser Anda, izinkan Kamera & Lokasi, lalu coba lagi.");
+    } finally {
+      setPermissionLoading(false);
+    }
+  };
+
   // Cleanup camera on unmount
   useEffect(() => {
     return () => {
@@ -263,10 +294,42 @@ export default function ReportPage() {
 
       {/* Main Content Canvas */}
       <main className="pt-24 pb-12 px-4 max-w-md mx-auto min-h-screen">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-foreground">Laporan Baru</h2>
-          <p className="text-base text-muted-foreground">Laporkan gangguan listrik di lokasi Anda secara real-time.</p>
-        </div>
+        {!permissionsGranted ? (
+          <div className="flex flex-col items-center justify-center text-center space-y-6 mt-10">
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+              <Camera className="w-12 h-12 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Izin Diperlukan</h2>
+              <p className="text-muted-foreground text-sm">
+                Untuk mencegah laporan palsu, aplikasi ini membutuhkan akses <b>Lokasi</b> (untuk menandai area pemadaman) dan <b>Kamera</b> (untuk verifikasi visual).
+              </p>
+            </div>
+            
+            {permissionError && (
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-sm font-medium">
+                {permissionError}
+              </div>
+            )}
+
+            <button 
+              onClick={handleRequestPermissions}
+              disabled={permissionLoading}
+              className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl shadow-lg shadow-primary/20 hover:brightness-110 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-70"
+            >
+              {permissionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+              {permissionLoading ? "Meminta Izin..." : "Izinkan Akses"}
+            </button>
+            <p className="text-xs text-muted-foreground/70 italic">
+              100% Aman. Data kamera hanya dianalisis di perangkat Anda dan tidak disimpan ke server.
+            </p>
+          </div>
+        ) : (
+          <div className="animate-in fade-in zoom-in duration-500">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-foreground">Laporan Baru</h2>
+              <p className="text-base text-muted-foreground">Laporkan gangguan listrik di lokasi Anda secara real-time.</p>
+            </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Status Toggle */}
@@ -394,6 +457,8 @@ export default function ReportPage() {
             {(!location || !captchaToken || !photoValidated) && <p className="text-xs text-destructive mt-2 text-center">Harap lengkapi lokasi, verifikasi visual, dan captcha.</p>}
           </div>
         </form>
+        </div>
+        )}
       </main>
 
       {/* BottomNavBar */}

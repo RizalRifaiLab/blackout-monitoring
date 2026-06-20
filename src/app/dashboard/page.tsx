@@ -394,34 +394,34 @@ export default function DashboardPage() {
             </div>
 
             {/* Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl pointer-events-auto">
-              <div className="bg-card/90 backdrop-blur-md border border-border/50 rounded-xl p-4 shadow-lg flex items-center gap-4 transition-transform hover:scale-[1.02]">
-                <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shrink-0">
-                  <Activity className="w-6 h-6 text-foreground" />
+            <div className="grid grid-cols-3 gap-2 md:gap-4 w-full max-w-4xl pointer-events-auto">
+              <div className="bg-card/90 backdrop-blur-md border border-border/50 rounded-xl p-2 md:p-4 shadow-lg flex flex-col md:flex-row items-center text-center md:text-left gap-1 md:gap-4 transition-transform hover:scale-[1.02]">
+                <div className="w-6 h-6 md:w-12 md:h-12 rounded-full bg-accent flex items-center justify-center shrink-0">
+                  <Activity className="w-3 h-3 md:w-6 md:h-6 text-foreground" />
                 </div>
-                <div>
-                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Laporan</div>
-                  <div className="text-2xl font-bold text-foreground">{totalLaporan.toLocaleString('id-ID')}</div>
-                </div>
-              </div>
-
-              <div className="bg-card/90 backdrop-blur-md border border-border/50 rounded-xl p-4 shadow-lg flex items-center gap-4 transition-transform hover:scale-[1.02]">
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                  <ZapOff className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Laporan Padam</div>
-                  <div className="text-2xl font-bold text-primary">{totalMati.toLocaleString('id-ID')}</div>
+                <div className="w-full">
+                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Total</div>
+                  <div className="text-sm md:text-2xl font-bold text-foreground leading-tight">{totalLaporan.toLocaleString('id-ID')}</div>
                 </div>
               </div>
 
-              <div className="bg-card/90 backdrop-blur-md border border-border/50 rounded-xl p-4 shadow-lg flex items-center gap-4 transition-transform hover:scale-[1.02]">
-                <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-6 h-6 text-secondary" />
+              <div className="bg-card/90 backdrop-blur-md border border-border/50 rounded-xl p-2 md:p-4 shadow-lg flex flex-col md:flex-row items-center text-center md:text-left gap-1 md:gap-4 transition-transform hover:scale-[1.02]">
+                <div className="w-6 h-6 md:w-12 md:h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <ZapOff className="w-3 h-3 md:w-6 md:h-6 text-primary" />
                 </div>
-                <div>
-                  <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Laporan Nyala</div>
-                  <div className="text-2xl font-bold text-secondary">{totalNyala.toLocaleString('id-ID')}</div>
+                <div className="w-full">
+                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Padam</div>
+                  <div className="text-sm md:text-2xl font-bold text-primary leading-tight">{totalMati.toLocaleString('id-ID')}</div>
+                </div>
+              </div>
+
+              <div className="bg-card/90 backdrop-blur-md border border-border/50 rounded-xl p-2 md:p-4 shadow-lg flex flex-col md:flex-row items-center text-center md:text-left gap-1 md:gap-4 transition-transform hover:scale-[1.02]">
+                <div className="w-6 h-6 md:w-12 md:h-12 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-3 h-3 md:w-6 md:h-6 text-secondary" />
+                </div>
+                <div className="w-full">
+                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Nyala</div>
+                  <div className="text-sm md:text-2xl font-bold text-secondary leading-tight">{totalNyala.toLocaleString('id-ID')}</div>
                 </div>
               </div>
             </div>
