@@ -275,7 +275,7 @@ export default function DashboardPage() {
       <main className="flex-1 flex flex-col relative">
         {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border z-20">
-          <AppLogo className="h-8 w-auto" />
+          <AppLogo className="h-[38px] w-auto" />
           <ThemeToggle />
         </header>
 
