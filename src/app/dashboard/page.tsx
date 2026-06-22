@@ -168,11 +168,7 @@ export default function DashboardPage() {
           return;
         }
 
-        // 2a. Fetch total all-time reports count
-        const { count: totalSemuaCount } = await supabase
-          .from('reports')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'mati');
+        // 2a. We no longer fetch all-time reports, we only count today's reports.
 
         // 2b. Fetch all reports today
         const startOfDay = new Date();
@@ -199,7 +195,7 @@ export default function DashboardPage() {
           });
         }
 
-        setTotalSemuaLaporan(totalSemuaCount || 0);
+        setTotalSemuaLaporan(hariIniCount);
         setTotalHariIni(hariIniCount);
         setTotal1JamLalu(satuJamCount);
 
@@ -352,7 +348,7 @@ export default function DashboardPage() {
                   <Activity className="w-3 h-3 md:w-6 md:h-6 text-foreground" />
                 </div>
                 <div className="w-full">
-                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Semua Laporan</div>
+                  <div className="text-[9px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Total Laporan</div>
                   <div className="text-sm md:text-2xl font-bold text-foreground leading-tight">{totalSemuaLaporan.toLocaleString('id-ID')}</div>
                 </div>
               </div>
